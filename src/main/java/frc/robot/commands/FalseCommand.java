@@ -15,16 +15,26 @@ import frc.robot.RobotContainer;
 public class FalseCommand extends Command {
 
   private Command ampFalse = new SequentialCommandGroup(
+      new InstantCommand(() -> RobotContainer.intake.setFeed(1)),
+      new InstantCommand(() -> RobotContainer.intake.setIntake(-0.4, -0.4)),
+      new WaitCommand(1),
+      new InstantCommand(() -> RobotContainer.intake.setFeed(0)),
       new InstantCommand(() -> RobotContainer.intake.setIntake(0, 0)),
-      new WaitCommand(0.5),
-      new InstantCommand(() -> RobotContainer.intake.setAngle(-86.81104874446066)));
+      new WaitCommand(0));
   private Command woofFalse = new SequentialCommandGroup(
       new InstantCommand(() -> RobotContainer.intake.setFeed(1)),
-      new WaitCommand(1.5),
+      new WaitCommand(2),
       new InstantCommand(() -> RobotContainer.intake.setIntake(0, 0)),
       new InstantCommand(() -> RobotContainer.intake.setFeed(0)),
-      new InstantCommand(() -> RobotContainer.intake.setFly(0.0, 0.0)),
-      new InstantCommand(() -> RobotContainer.intake.setAngle(-86.81104874446066)));
+      new InstantCommand(() -> RobotContainer.intake.setFly(0.0, 0.0)));
+
+  private Command rangeFalse = new SequentialCommandGroup(
+      new InstantCommand(() -> RobotContainer.intake.setFeed(1)),
+      new WaitCommand(1),
+      new InstantCommand(() -> RobotContainer.intake.setIntake(0, 0)),
+      new InstantCommand(() -> RobotContainer.intake.setFeed(0)),
+      new InstantCommand(() -> RobotContainer.intake.setFly(0.0, 0.0)));
+      //new InstantCommand(() -> RobotContainer.intake.setAngle(-86.81104874446066)));
 
   /** Creates a new FalseCommand. */
   public FalseCommand() {
@@ -36,8 +46,10 @@ public class FalseCommand extends Command {
   public void initialize() {
     if (RobotContainer.intake.getMode() == RobotMode.AMP) {
       CommandScheduler.getInstance().schedule(ampFalse);
-    } else {
+    } else if (RobotContainer.intake.getMode() == RobotMode.SUBWOOFER) {
       CommandScheduler.getInstance().schedule(woofFalse);
+    } else if (RobotContainer.intake.getMode() == RobotMode.RANGE) {
+      CommandScheduler.getInstance().schedule(rangeFalse);
     }
   }
 

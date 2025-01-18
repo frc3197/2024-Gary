@@ -12,10 +12,14 @@ import frc.RobotMode;
 import frc.robot.RobotContainer;
 
 public class TrueCommand extends Command {
-  private Command ampTrue = new InstantCommand(() -> RobotContainer.intake.setIntake(-0.4, -0.4));
+  private Command ampTrue = new InstantCommand(() -> RobotContainer.intake.setAngle(RobotContainer.intake.ampAngle));
   private Command woofTrue = new SequentialCommandGroup(
-        new InstantCommand(() -> RobotContainer.intake.setFly(0.9, 1)),
-        new InstantCommand(() -> RobotContainer.intake.setAngle(-25))
+        new InstantCommand(() -> RobotContainer.intake.setFly(0.8, 0.9)),
+        new InstantCommand(() -> RobotContainer.intake.setAngle(-35))
+        );
+
+    private Command rangeTrue = new SequentialCommandGroup(
+        new InstantCommand(() -> RobotContainer.intake.setFly(0.92, 0.95))
         );
 
   /** Creates a new TrueCommand. */
@@ -28,8 +32,10 @@ public class TrueCommand extends Command {
   public void initialize() {
     if (RobotContainer.intake.getMode() == RobotMode.AMP) {
       CommandScheduler.getInstance().schedule(ampTrue);
-    } else {
+    } else if (RobotContainer.intake.getMode() == RobotMode.SUBWOOFER) {
       CommandScheduler.getInstance().schedule(woofTrue);
+    } else if (RobotContainer.intake.getMode() == RobotMode.RANGE) {
+      CommandScheduler.getInstance().schedule(rangeTrue);
     }
   }
 
